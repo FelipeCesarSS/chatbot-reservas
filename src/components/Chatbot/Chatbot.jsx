@@ -1,18 +1,17 @@
-import React, { Component, useState } from "react";
+import React, { useState } from 'react';
 import ChatBot from 'react-simple-chatbot';
-import {ThemeProvider} from 'styled-components';
+import { ThemeProvider } from 'styled-components';
 import Post from './Post';
-// import Link from './Link';
-import Map from './map'
-
+import Map from './map';
+import '../../App.css';
 
 const theme = {
-    background: '#f5f8fa',
-    fontFamily: 'Arial, sans-serif',
-    headerBgColor: '#333',
+    background: '#f5f8fb',
+    fontFamily: 'Helvetica Neue',
+    headerBgColor: '#0f4d4a',
     headerFontColor: '#fff',
-    headerFontSize: '16px',
-    botBubbleColor: '#333',
+    headerFontSize: '15px',
+    botBubbleColor: '#0f4d4a',
     botFontColor: '#fff',
     userBubbleColor: '#fff',
     userFontColor: '#4a4a4a',
@@ -22,148 +21,114 @@ const config = {
     width: '300px',
     height: '400px',
     hideUserAvatar: true,
-    placeholder: 'Digite uma pergunta',
-    headerTitle: 'ChatBot',
+    placeholder: 'Digite sua resposta...',
+    headerTitle: 'Turismo Alagoas',
 };
 
-const ChatBot = () => {
-    const [showChat, setshowChat] = useState(false);
+const Chatbot = () => {
+    const [showChat, setShowChat] = useState(false);
 
-    const startChat = () => {
-        setshowChat(true);
-    };
-
-    const hideChat = () => {
-        setshowChat(false);
+    const toggleChat = () => {
+        setShowChat((prev) => !prev);
     };
 
     return (
         <ThemeProvider theme={theme}>
-            <div style={{display: showChat ? 'none' : ''}}>
-                <ChatBot
-                    speechSynthesis={{enable: true, lang: 'pt-BR'}}
-                    recognitionEnabled={true}
-                    steps={[
-                        {
-                            id: 'welcome',
-                            message: 'Ola!',
-                            trigger: 'q-firstname',
-                        },
-                        {
-                            id: 'q-firstname',
-                            message: 'Qual é o seu nome',
-                            trigger: 'firstname',
-                        },
-                        {
-                            id: 'firstname',
-                            user: true,
-                            validador: (value) => {
-                                if(/^[A-Za-z]+$/.test(value)){
-                                    return true;
-                                }else{
-                                    return 'Por favor, digite seu nome somente com letras';
-                                }
+            <div>
+                {showChat && (
+                    <ChatBot
+                        speechSynthesis={{ enable: true, lang: 'pt-BR' }}
+                        recognitionEnable={true}
+                        steps={[
+                            {
+                                id: 'boas-vindas',
+                                message: 'Olá! Bem-vindo ao guia de turismo em Alagoas.',
+                                trigger: 'pergunta-nome',
                             },
-                            trigger: 'turismocbot',
-                        },
-                        {
-                            id: 'turismocbot',
-                            message: 'oi, {previousValue}! Eu sou o turismocbot! Como posso ajudar',
-                            trigger: 'qtype',
-                        },
-                        {
-                            id: 'qtype',
-                            options: [
-                                { value: 'horario', label: 'Quero saber o horário de check-in', trigger: 'horario' },
-                                { value: 'cancelamento', label: 'Quero saber como cancelar minha reserva', trigger: 'cancelamento' },
-                                { value: 'checkin', label: 'Quero saber o local de check-in', trigger: 'checkin' },
-                                { value: 'praias', label: 'Quero saber sobre as praias', trigger: 'praias' },
-                                { value:'restaurantes', label: 'Quero saber sobre os restaurantes', trigger:'restaurantes' },
-                                { value: 'cultura', label: 'Quero saber sobre a cultura', trigger: 'cultura' },
-                                { value:'submit', label: 'Mais informações', trigger:'submit' },
-                                {value: 'map', label: 'pontos turisticos', trigger:'map' },
-                            ],
-                        },
-                        {
-                            id: 'horario',
-                            message: 'Para ver o horário de check-in, você pode verificar na página do hotel ou acessar o site do hotel on-line.',
-                            trigger: 'qtype',
-                        },
-                        {
-                            id: 'cancelamento',
-                            message: 'Para cancelar sua reserva, você pode acessar o site do hotel on-line e fazer o cancelamento.',
-                            trigger: 'qtype',
-                        },
-                        {
-                            id: 'checkin',
-                            message: 'O local de check-in do hotel é o Hotel Maceió.',
-                            trigger: 'qtype',
-                        },
-                        {
-                            id: 'praias',
-                            message: 'As praias de Maceió incluem Pajuçara, Ponta Verde e Jatiúca.',
-                            trigger: 'qtype',
-                        },
-                        {
-                            id:'restaurantes',
-                            message: 'Os restaurantes do hotel Maceió incluem a Maceió do Café, a Maceió do Bistro, e a Maceió do Restaurante.',
-                            trigger: 'qtype',
-                        },
-                        {
-                            id: 'cultura',
-                            message: 'A cultura de Maceió é muito divertida e inclui atividades como a Maceió do Sertão, a Maceió do Mar e a Maceió do Bairro.',
-                            trigger: 'qtype',
-                        },
-                        {
-                            id: 'map',
-                            Component:<Map/>,
-                            trigger: 'qtype',
-                        },
-                        {
-                            id: 'q-submit',
-                            message: 'Voce tem mais perguntas?',
-                            trigger: 'qtype',
-                        },
-                        {
-                            id: 'submit',
-                            options: [
-                                {value: 'S', label: 'Sim', trigger: 'no-submit'},
-                                {value: 'N', label: 'Não', trigger: 'end-message'},
-                            ],
-                        },
-                        {
-                            id: 'no-submit',
-                            options: [
-                                {value: 'qtype', label: 'Sobre o hotel', trigger: 'horario' },
-                                {value: 'qtype', label: 'Como cancelar a reserva', trigger: 'cancelamento' },
-                                {value: 'qtype', label: 'Onde é o check-in', trigger: 'checkin' },
-                                {value: 'qtype', label: 'Sobre as praias', trigger: 'praias' },
-                                {value: 'qtype', label: 'Sobre os restaurantes', trigger: 'restaurantes' },
-                                {value: 'qtype', label: 'Sobre a cultura', trigger: 'cultura' },
-                                {value: 'q-submit', label: 'Outras perguntas?', trigger: 'q-submit'},
-                            ],
-                        },
-                        {
-                            id: 'end-message',
-                            Component: <Post/>,
-                            asMessage: true,
-                            end: true,
-                        },
-                    ]}
-                    {...config}
-                />
+                            {
+                                id: 'pergunta-nome',
+                                message: 'Qual é o seu nome?',
+                                trigger: 'nome',
+                            },
+                            {
+                                id: 'nome',
+                                user: true,
+                                validator: (value) => /^[A-Za-zÀ-ú\s]+$/.test(value) ? true : 'Por favor, insira apenas caracteres alfabéticos.',
+                                trigger: 'saudacao',
+                            },
+                            {
+                                id: 'saudacao',
+                                message: 'Oi, {previousValue}! Como posso ajudar você com informações sobre Alagoas?',
+                                trigger: 'tipo-pergunta',
+                            },
+                            {
+                                id: 'tipo-pergunta',
+                                options: [
+                                    { value: 1, label: 'Pontos Turísticos', trigger: 'pontos-turisticos' },
+                                    { value: 2, label: 'Praias', trigger: 'praias' },
+                                    { value: 3, label: 'Gastronomia', trigger: 'gastronomia' },
+                                    { value: 4, label: 'Atividades', trigger: 'atividades' },
+                                ],
+                            },
+                            {
+                                id: 'pontos-turisticos',
+                                message: 'Aqui estão os pontos turísticos de Alagoas. Você gostaria de ver o mapa?',
+                                trigger: 'mapa-button',
+                            },
+                            {
+                                id: 'mapa-button',
+                                component: (
+                                    <div>
+                                        <Map />
+                                        <button onClick={toggleChat}> Mostrar mapa</button>
+                                    </div>
+                                ),
+                            },
+                            {
+                                id: 'praias',
+                                message: 'Alagoas tem praias lindas! Algumas recomendadas são Praia do Francês, Praia do Gunga e Pajuçara.',
+                                trigger: 'pergunta-final',
+                            },
+                            {
+                                id: 'gastronomia',
+                                message: 'Não perca os pratos típicos como sururu, peixada alagoana e bolo de rolo!',
+                                trigger: 'pergunta-final',
+                            },
+                            {
+                                id: 'atividades',
+                                message: 'Você pode aproveitar passeios de jangada, mergulho e trilhas ecológicas.',
+                                trigger: 'pergunta-final',
+                            },
+                            {
+                                id: 'pergunta-final',
+                                message: 'Posso ajudar com mais alguma informação?',
+                                trigger: 'resposta-final',
+                            },
+                            {
+                                id: 'resposta-final',
+                                options: [
+                                    { value: 'sim', label: 'Sim', trigger: 'tipo-pergunta' },
+                                    { value: 'nao', label: 'Não', trigger: 'mensagem-fim' },
+                                ],
+                            },
+                            {
+                                id: 'mensagem-fim',
+                                component: <Post />,
+                                asMessage: true,
+                                end: true,
+                            },
+                        ]}
+                        {...config}
+                    />
+                )}
             </div>
             <div>
-                {!showChat ?(
-                    <button className="btn" onClick={startChat}>
-                        <i className="fa fa-minus"></i>
-                    </button>
-                ):(
-                    <button className="btn" onClick={endChat}>
-                        <i className="fa fa-plus"></i>
-                    </button>
-                )}
+                <button className="btn" onClick={toggleChat}>
+                    <i className={`fa fa-${showChat ? 'minus' : 'plus'}`}></i> {showChat ? 'Fechar Chat' : 'Iniciar Chat'}
+                </button>
             </div>
         </ThemeProvider>
     );
 };
+
+export default Chatbot;

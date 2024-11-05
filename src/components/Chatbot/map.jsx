@@ -7,6 +7,7 @@ import 'leaflet/dist/leaflet.css';
 const Map = () => {
     const [locations, setLocations] = useState([]);
     const center = [-9.66625, -35.7351];
+    const radius = 15000;
 
     useEffect(() => {
         const fetchTouristSpots = async () => {
@@ -19,14 +20,14 @@ const Map = () => {
                     node(around:10000, -9.66625, -35.7351)["historic"="museum"];
                     out;
                 `;
-                const response = await axios.get(`https://overpass-api.de/api/interpreter?data=${query}`);
+                const response = await axios.get(`https://overpass-api.de/api/interpreter?data=${encodeURIComponent(query)}`);
                 setLocations(response.data.elements);
             }catch(error){
                 console.error(`Error ao locais:`, error);
             }
         };
         fetchTouristSpots();
-    },[]);
+    }, [radius]);
 
     const renderMarkers = () => {
         locations.map((location) => {
@@ -37,15 +38,16 @@ const Map = () => {
                 </Popup>
             </Marker>
         });
-
-        return (
-            <MapContainer center={center} zoom={13} style={{height: '100vh', width: '100%'}}>
-                <TileLayer
-                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                />
-                {renderMarkers}
-            </MapContainer>
-        );
     };
+
+    return (
+        <MapContainer center={center} zoom={13} style={{height: '100vh', width: '100%'}}>
+            <TileLayer
+                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            />
+            {renderMarkers}
+        </MapContainer>
+    );
 };
+export default Map;
